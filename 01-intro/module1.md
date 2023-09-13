@@ -124,7 +124,7 @@ u - v
 ### Multiplication
 
 #####  Vector-vector multiplication
-
+![Alt text](images/dot_product.png)
 ~~~~python
 def vector_vector_multiplication(u, v):
     assert u.shape[0] == v.shape[0]
@@ -140,7 +140,7 @@ def vector_vector_multiplication(u, v):
 ~~~~
 
 #####  Matrix-vector multiplication
-
+![Alt text](images/matrix_vector.png)
 ~~~~python
 def matrix_vector_multiplication(U, v):
     assert U.shape[1] == v.shape[0]
@@ -156,7 +156,7 @@ def matrix_vector_multiplication(U, v):
 ~~~~
 
 #####  Matrix-matrix multiplication
-
+![Alt text](images/matrix_matrix.png)
 ~~~~python
 def matrix_matrix_multiplication(U, V):
     assert U.shape[1] == V.shape[0]
@@ -174,11 +174,12 @@ def matrix_matrix_multiplication(U, V):
     return result
 ~~~~
 ### Identity matrix
-
+like number 1  you will get the same matrix when dot identity matrix
 ~~~~python
 I = np.eye(3)
 ~~~~
 ### Inverse
+
 ~~~~python
 V = np.array([
     [1, 1, 2],
