@@ -435,3 +435,212 @@ Add notes from the video (PRs are welcome)
 * sigmoid: negativ input --> zero, positive input --> straight line
 * relu
 * softmax
+
+## 8.9 Regularization and dropout
+
+<a href="https://www.youtube.com/watch?v=74YmhVM6FTM&list=PL3MmuxUbc_hIhxl5Ji8t4O6lPAOpHaCLR"><img src="images/thumbnail-8-09.jpg"></a>
+
+[Slides](https://www.slideshare.net/AlexeyGrigorev/ml-zoomcamp-8-neural-networks-and-deep-learning-250592316)
+
+
+Dropout is a technique that prevents overfitting in neural networks by randomly dropping nodes of a layer during training. As a result, the trained model works as an ensemble model consisting of multiple neural networks.
+
+From perivous experiments we got the best value of learning rate `0.01` and layer size of `100`. We'll use these values for the next experiment along with different values of dropout rates:
+
+```python
+# Function to define model by adding new dense layer and dropout
+def make_model(learning_rate=0.01, size_inner=100, droprate=0.5):
+    base_model = Xception(weights='imagenet',
+                          include_top=False,
+                          input_shape=(150,150,3))
+
+    base_model.trainable = False
+    
+    #########################################
+    
+    inputs = keras.Input(shape=(150,150,3))
+    base = base_model(inputs, training=False)
+    vectors = keras.layers.GlobalAveragePooling2D()(base)
+    inner = keras.layers.Dense(size_inner, activation='relu')(vectors)
+    drop = keras.layers.Dropout(droprate)(inner) # add dropout layer
+    outputs = keras.layers.Dense(10)(drop)
+    model = keras.Model(inputs, outputs)
+    
+    #########################################
+    
+    optimizer = keras.optimizers.Adam(learning_rate=learning_rate)
+    loss = keras.losses.CategoricalCrossentropy(from_logits=True)
+
+    # Compile the model
+    model.compile(optimizer=optimizer,
+                  loss=loss,
+                  metrics=['accuracy'])
+    
+    return model
+
+
+# Create checkpoint to save best model for version 3
+filepath = './xception_v3_{epoch:02d}_{val_accuracy:.3f}.h5'
+checkpoint = keras.callbacks.ModelCheckpoint(filepath=filepath,
+                                             save_best_only=True,
+                                             monitor='val_accuracy',
+                                             mode='max')
+
+# Set the best values of learning rate and inner layer size based on previous experiments
+learning_rate = 0.001
+size = 100
+
+# Dict to store results
+scores = {}
+
+# List of dropout rates
+droprates = [0.0, 0.2, 0.5, 0.8]
+
+for droprate in droprates:
+    print(droprate)
+    
+    model = make_model(learning_rate=learning_rate,
+                       size_inner=size,
+                       droprate=droprate)
+    
+    # Train for longer (epochs=30) cause of dropout regularization
+    history = model.fit(train_ds, epochs=30, validation_data=val_ds, callbacks=[checkpoint])
+    scores[droprate] = history.history
+    
+    print()
+    print()
+```
+
+Note: Because we introduce dropout in the neural networks, we will need to train our model for longer, hence, number of epochs is set to `30`.
+
+**Classes, functions, attributes**:
+
+- `tf.keras.layers.Dropout()`: dropout layer to randomly sets input units (i.e, nodes) to 0 with a frequency of rate at each epoch during training
+- `rate`: argument to set the fraction of the input units to drop, it is a value of float between 0 and 1
+
+
+## 8.10 Data augmentation
+
+<a href="https://www.youtube.com/watch?v=aoPfVsS3BDE&list=PL3MmuxUbc_hIhxl5Ji8t4O6lPAOpHaCLR"><img src="images/thumbnail-8-10.jpg"></a>
+
+In this video, I had a typo/bug: instead of using `val_gen` for generating images for validation,
+I used `train_gen`. That's why adding augmentations didn't help in the video.
+
+[Slides](https://www.slideshare.net/AlexeyGrigorev/ml-zoomcamp-8-neural-networks-and-deep-learning-250592316)
+
+
+Data augmentation is a process of artifically increasing the amount of data by generating new images from existing images. This includes adding minor alterations to images by flipping, cropping, adding brightness and/or contrast, and many more.
+
+Keras `ImageDataGenerator` class has many parameters for data augmentation that we can use for generating data. Important thing to remember that the data augmentation should only be implemented on train data, not the validation. Here's how we can generate augmented data for training the model:
+
+```python
+# Create image generator for train data and also augment the images
+train_gen = ImageDataGenerator(preprocessing_function=preprocess_input,
+                               rotation_range=30,
+                               width_shift_range=10.0,
+                               height_shift_range=10.0,
+                               shear_range=10,
+                               zoom_range=0.1,
+                               vertical_flip=True)
+
+train_ds = train_gen.flow_from_directory(directory=train_imgs_dir,
+                                         target_size=(150,150),
+                                         batch_size=32)
+```
+
+**How to choose augmentations?**
+
+- First step is to use our own judgement, for example, looking at the images (both on train and validation), does it make sense to introduce horizontal flip?
+- Look at the dataset, what kind of vairations are there? are objects always center?
+- Augmentations are hyperparameters: like many other hyperparameters, often times we need to test whether image augmentations are useful for the model or not. If the model doesn't improve or have same performance after certain epochs (let's say 20), in that case we don't use it.
+
+Usually augmented data required training for longer.
+
+## 8.11 Training a larger model
+
+<a href="https://www.youtube.com/watch?v=_QpDGJwFjYA&list=PL3MmuxUbc_hIhxl5Ji8t4O6lPAOpHaCLR"><img src="images/thumbnail-8-11.jpg"></a>
+
+[Slides](https://www.slideshare.net/AlexeyGrigorev/ml-zoomcamp-8-neural-networks-and-deep-learning-250592316)
+
+
+In this section we increase the image input size from `150` to `299`, reduce the amount of data augmentation parameters and lower the learning rate. This gives us the best results than any previous experiments.
+
+
+## 8.12 Using the model
+
+<a href="https://www.youtube.com/watch?v=cM1WHKae1wo&list=PL3MmuxUbc_hIhxl5Ji8t4O6lPAOpHaCLR"><img src="images/thumbnail-8-12.jpg"></a>
+
+[Slides](https://www.slideshare.net/AlexeyGrigorev/ml-zoomcamp-8-neural-networks-and-deep-learning-250592316)
+
+Earlier we used **h5 format** to save our model when creating the checkpoint. The HDF5 format contains the model's architecture, weights values, and `compile()` information. The saved model can be loaded and used for prediction with `keras.models.load_model(path/to/saved_model)` method.
+
+To evaluate the model and make prediction on test data, we'll need to create the same preprocessing steps for the image as we have done with train and validation data:
+
+```python
+# Create image generator for test data
+test_gen = ImageDataGenerator(preprocessing_function=preprocess_input)
+
+# Path of test images directory
+test_imgs_dir = '../input/mlzoomcampimageclassification/zoomcamp-image-classification/clothing-dataset-small/test'
+
+# Load in test images to generator
+test_ds = test_gen.flow_from_directory(directory=test_imgs_dir,
+                                       target_size=(299,299),
+                                       batch_size=32,
+                                       shuffle=False)
+
+# Path of an image to make predictions
+img_path = 'path/to/image'
+# Load image
+img = load_img(img_path, target_size=(299,299))
+
+# Convert image to numpy array
+x = np.array(img)
+# Add batch dimension to the image
+X = np.array([x])
+# Preprocess the image 
+X = preprocess_input(X)
+```
+
+The model performance can be evaluated on test data with `model.evaluate(test_ds)` and the prediction on the test image can be made using the method `model.predict(X)`. We can then zip the class names and prediction to see the likelihood.
+
+**Classes, functions, attributes**:
+
+- `keras.models.load_model()`: method to load saved model
+- `model.evaluate()`: method to evaluate the performance of the model based on the evaluation metrics
+- `model.predict()`: method to make predictions of output depending on the input
+
+## 8.13 Summary
+
+<a href="https://www.youtube.com/watch?v=mn0BcXJlRFM&list=PL3MmuxUbc_hIhxl5Ji8t4O6lPAOpHaCLR"><img src="images/thumbnail-8-13.jpg"></a>
+
+- We can use pre-trained models for general image classification
+- Convolutional layers let us turn an image into a vector
+- Dense layers use the vector to make the predictions
+- Instead of training a model from scratch, we can use transfer learning and re-use already trained convolutional layers
+- First, train a small model (150x150) before training a big one (299x299)
+- Learning rate - how fast the model trains. Fast learner aren't always best ones
+- We can save the best model using callbacks and checkpointing
+- To avoid overfitting, use dropout and augmentation
+
+## 8.14 Explore more
+
+**TODO**
+
+- Add more data, e.g, Zalando etc
+- Albumentations - another way of generating augmentations
+- Use PyTorch or MXNet instead of TensorFlow/Keras
+- In addition to Xception, there are others architectures - try them
+
+**Other projects:**
+
+- cats vs dogs
+- Hotdog vs not hotdog
+- Category of images
+
+## Navigation
+
+* [Machine Learning Zoomcamp course](../)
+* [Session 8: Neural Networks and Deep Learning](./)
+* Previous: [Summary](13-summary.md)
+* Next: [Homework](homework.md)
