@@ -1,5 +1,5 @@
 # First install the python 3.8, the slim version uses less space
-FROM python:3.8.12-slim
+FROM python:3.12
 
 # Install pipenv library in Docker
 RUN pip install pipenv
@@ -19,5 +19,5 @@ COPY ["predict.py", "model.bin", "dv.bin", "./"]
 # We need to expose the 9696 port because we're not able to communicate with Docker outside it
 EXPOSE 9696
 
-# If we run the Docker image, we want our churn app to be running
+# If we run the Docker image, we want our predict app to be running
 ENTRYPOINT ["gunicorn", "--bind", "0.0.0.0:9696", "predict:app"]
