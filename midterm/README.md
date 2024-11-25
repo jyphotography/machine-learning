@@ -23,34 +23,31 @@ This dataset contains prices of New York houses, providing valuable insights int
 
 ## Project Structure
 ```css
-NY-Housing-Price-Prediction/
+midterm/
 ├── data/
-│   └── ny_housing_data.csv
+│   └── NY-House-Dataset.csv
 ├── notebooks/
-│   └── data_exploration.ipynb
+│   └── notebook.ipynb
 ├── src/
-│   ├── data_preprocessing.py
-│   ├── model_training.py
+│   ├── training.py
+│   ├── predict.py
 │   └── model_evaluation.py
-├── models/
-│   └── housing_price_model.pkl
+│   └── Dockerfile
 ├── README.md
-└── requirements.txt
 ```
 
 ## Requirements
 
-- Python 3.7 or higher
-- Jupyter Notebook
-- Required Python libraries listed in `requirements.txt`
+- Python 3.11 or higher
+- Docker
 
 ## Instructions on How to Run the Project
 
 1. **Clone the Repository**
 
    ```bash
-   git clone https://github.com/yourusername/NY-Housing-Price-Prediction.git
-   cd NY-Housing-Price-Prediction
+   git clone https://github.com/jyphotography/machine-learning.git
+   cd midterm
    ```
 2. **Set Up a Virtual Environment**
     ```bash
@@ -66,7 +63,8 @@ NY-Housing-Price-Prediction/
 
 
 ## Results
-The machine learning model achieved an R-squared score of X.XX, indicating a strong correlation between the predicted and actual housing prices. The model can assist potential buyers and sellers in making informed decisions based on predictive analytics.
+The machine learning model achieved an RMSE 580k. The price range in Mahanttan is huge, and need to segment for actual use cases in the future.
+The model can assist potential buyers and sellers in making informed decisions based on predictive analytics.
 
 
 ## License
