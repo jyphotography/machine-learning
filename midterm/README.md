@@ -59,9 +59,6 @@ midterm/
 3. **EDA & ModeL Training**
     ```bash
     jupyter notebook notebooks/notebook.ipynb
-    python src/training.py
-    python src/predict.py
-    python src/test.py # test model pipeline
     ```
 4. **Model Reproduce & Deployment**
     ```bash
@@ -71,11 +68,17 @@ midterm/
     ```
 5. **Containerization**
     ```bash
+    # docker was installed and leave venv 
     cd src
     docker build -t house-prediction .
     docker run -it -p 9696:9696 house-prediction:latest
     python src/test.py # test model pipeline in main folder
     ```
+    You should be able to use Postman to call this API with a JSON file to get your house prediction
+    http://0.0.0.0:9696/predict
+    {"BEDS": 4, "BATH": 2, "PROPERTYSQFT": 2184, "SUBLOCALITY": "Queens County"}
+    ![Alt text](/workspaces/machine-learning/midterm/api_call_result.png)
+
 
 
 ## Results
