@@ -48,7 +48,7 @@ midterm/
 
    ```bash
    git clone https://github.com/jyphotography/machine-learning.git
-   cd machine-learning/midterm/src
+   cd machine-learning/midterm/
    ```
 2. **Set Up a Virtual Environment**
     ```bash
@@ -69,12 +69,12 @@ midterm/
     python src/predict.py
     python src/test.py # test model pipeline
     ```
-3. **Containerization**
+5. **Containerization**
     ```bash
-    jupyter notebook notebooks/notebook.ipynb
-    python src/training.py
-    python src/predict.py
-    python src/test.py # test model pipeline
+    cd src
+    docker build -t house-prediction .
+    docker run -it -p 9696:9696 house-prediction:latest
+    python src/test.py # test model pipeline in main folder
     ```
 
 
