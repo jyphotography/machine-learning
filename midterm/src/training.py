@@ -13,14 +13,14 @@
 import pandas as pd
 import numpy as np
 
-import seaborn as sns
+# import seaborn as sns
 # from matplotlib import pyplot as plt
 
 # %% [markdown]
 # ## 1.1 Data Loading
 
 # %%
-df = pd.read_csv('../data/NY-House-Dataset.csv')
+df = pd.read_csv('data/NY-House-Dataset.csv')
 
 # %%
 # df.head()
@@ -76,7 +76,7 @@ df_new = df.drop(outliers.index)
 # plt.xlabel('Price')
 # plt.title('Distribution of prices')
 
-plt.show()
+# plt.show()
 
 # %%
 df_new.describe()

@@ -55,10 +55,6 @@ midterm/
     python -m venv venv
     source venv/bin/activate  # On Windows use `venv\Scripts\activate`
     pip install -r requirements.txt
-    jupyter notebook notebooks/notebook.ipynb
-    python src/model_training.py
-    python src/model_evaluation.py
-    python src/predict.py --input data/new_listings.csv --output predictions.csv
     ```
 3. **EDA & ModeL Training**
     ```bash
