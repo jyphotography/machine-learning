@@ -60,8 +60,21 @@ midterm/
     ```bash
     jupyter notebook notebooks/notebook.ipynb
     python src/training.py
-    python src/model_evaluation.py
-    python src/predict.py --input data/new_listings.csv --output predictions.csv
+    python src/predict.py
+    python src/test.py # test model pipeline
+    ```
+4. **Model Reproduce & Deployment**
+    ```bash
+    python src/training.py
+    python src/predict.py
+    python src/test.py # test model pipeline
+    ```
+3. **Containerization**
+    ```bash
+    jupyter notebook notebooks/notebook.ipynb
+    python src/training.py
+    python src/predict.py
+    python src/test.py # test model pipeline
     ```
 
 
