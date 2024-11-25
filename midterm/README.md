@@ -74,10 +74,12 @@ midterm/
     docker run -it -p 9696:9696 house-prediction:latest
     python src/test.py # test model pipeline in main folder
     ```
-    You should be able to use Postman to call this API with a JSON file to get your house prediction
+    You should be able to use Postman to call this API with a JSON file to get your house prediction result.
+    ```bash
     http://0.0.0.0:9696/predict
     {"BEDS": 4, "BATH": 2, "PROPERTYSQFT": 2184, "SUBLOCALITY": "Queens County"}
-    ![Alt text](/workspaces/machine-learning/midterm/api_call_result.png)
+    ```
+    ![Result](api_call_result.png)
 
 
 
