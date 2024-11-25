@@ -33,6 +33,7 @@ midterm/
 │   ├── predict.py
 │   └── model_evaluation.py
 │   └── Dockerfile
+├── requirements.txt
 ├── README.md
 ```
 
@@ -47,7 +48,7 @@ midterm/
 
    ```bash
    git clone https://github.com/jyphotography/machine-learning.git
-   cd midterm
+   cd machine-learning/midterm/src
    ```
 2. **Set Up a Virtual Environment**
     ```bash
