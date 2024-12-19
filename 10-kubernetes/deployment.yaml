@@ -14,13 +14,13 @@ spec:
     spec:
       containers:
       - name: subscription
-        image: <Image>
+        image: svizor/zoomcamp-model:3.11.5-hw10
         resources:
           requests:
             memory: "64Mi"
-            cpu: "100m"            
+            cpu: "100m"
           limits:
-            memory: <Memory>
-            cpu: <CPU>
+            memory: "128Mi"
+            cpu: "200m"
         ports:
-        - containerPort: <Port>
+        - containerPort: 80
